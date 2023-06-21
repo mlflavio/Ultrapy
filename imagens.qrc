@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icon_inmetro.png</file>
+    <file>nesa grande icon.png</file>
+  </qresource>
+</RCC>
