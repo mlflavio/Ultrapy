@@ -9,13 +9,13 @@ import matplotlib.cm as cm
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-
+        MainWindow.setObjectName("ULTRApy")
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(835, 636)
+        MainWindow.resize(875, 636)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget_4 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_4.setGeometry(QtCore.QRect(10, 10, 815, 591))
+        self.verticalLayoutWidget_4.setGeometry(QtCore.QRect(10, 10, 850, 591))
         self.verticalLayoutWidget_4.setObjectName("verticalLayoutWidget_4")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_4)
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -82,6 +82,11 @@ class Ui_MainWindow(object):
         self.comboBox.setObjectName("comboBox")
         self.verticalLayout_2.addWidget(self.comboBox)
 
+        self.horizontalSlider = QtWidgets.QSlider(self.verticalLayoutWidget_4)
+        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setObjectName("horizontalSlider")
+        self.verticalLayout_2.addWidget(self.horizontalSlider)
+
         self.horizontalLayout_3.addLayout(self.verticalLayout_2)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -92,6 +97,14 @@ class Ui_MainWindow(object):
         self.comboBox_2 = QtWidgets.QComboBox(self.verticalLayoutWidget_4)
         self.comboBox_2.setObjectName("comboBox_2")
         self.verticalLayout_3.addWidget(self.comboBox_2)
+
+        self.horizontalSlider_2 = QtWidgets.QSlider(self.verticalLayoutWidget_4)
+        self.horizontalSlider_2.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider_2.setObjectName("horizontalSlider_2")
+        self.horizontalSlider_2.setMinimum(0)
+        self.horizontalSlider_2.setMaximum(100)
+        self.horizontalSlider_2.setValue(0)
+        self.verticalLayout_3.addWidget(self.horizontalSlider_2)
 
         self.horizontalLayout_3.addLayout(self.verticalLayout_3)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -151,18 +164,12 @@ class Ui_MainWindow(object):
         self.heatmap = pg.ImageItem()
         self.plot_item.addItem(self.heatmap)
 
-        # Dados do heatmap
-        data = np.random.rand(200, 100)
-
         # Criação da tabela de pesquisa de cores
         cmap = cm.get_cmap('hot')
         lut = (cmap(np.arange(cmap.N)) * 255).astype(np.uint8)
 
         # Aplicar a tabela de cores
         self.heatmap.setLookupTable(lut)
-
-        # Atualize os valores do ImageItem
-        self.heatmap.setImage(data)
 
         # gradient_editor_item = pg.GradientEditorItem()  # Create GradientEditorItem for the color map
         # gradient_editor_item.setOrientation('right')

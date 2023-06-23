@@ -11,17 +11,12 @@ import os
 import configparser
 
 
-def mining(data):
-    # Converte os dados da envoltória do tipo string para uma lista de inteiros
-    aux = [i.split(",") for i in data]
-
-    for i in range(len(aux)):
-        aux[i][0] = aux[i][0].replace("[", "")
-        aux[i][-1] = aux[i][-1].replace("]", "")
-        for j in range(200):
-            aux[i][j] = int(aux[i][j])
-
-    return np.array(aux)
+def string_to_int_list(string):
+    string = string.strip('[]')
+    values = string.split(',')
+    values = [val.strip() for val in values]
+    int_list = [int(val) for val in values]
+    return int_list
 
 def concat_files(directory, from_files, to_file):
     with open(to_file, 'w') as destine:
@@ -50,6 +45,8 @@ class MainWindow(QMainWindow):
         self.ui.toolButton.clicked.connect(self.select_file)
         self.ui.pushButton.clicked.connect(self.plot)
         self.ui.pushButton_2.clicked.connect(self.to_cloud)
+        self.ui.horizontalSlider.valueChanged.connect(self.updateComboBoxValue)
+        self.ui.horizontalSlider_2.valueChanged.connect(self.updateComboBoxValue2)
 
     def center(self):
         # centraliza janela
@@ -61,6 +58,7 @@ class MainWindow(QMainWindow):
 
     def select_file(self):
         # abre uma janela para seleção do arquivo
+        past_dict = self.ui.lineEdit.text()
         directory = QFileDialog.getExistingDirectory(self, "Selecionar uma pasta")
         self.ui.lineEdit.setText(directory)
 
@@ -69,42 +67,37 @@ class MainWindow(QMainWindow):
 
         self.df = pd.read_csv("Concatenated_files.csv", index_col="timestamp_str")
 
-        # Remove linhas onde o nome é 'timestamp_str' e 'profile_data'
-        nomes_remover = ['timestamp_str', 'profile_data']
-        self.df = self.df[~self.df.isin(nomes_remover)].dropna()
+        # Remove linhas onde o nome é 'profile_data'
+        self.df = self.df[self.df != "profile_data"].dropna()
+        df_index = self.df.index.drop_duplicates()
 
-        self.df.to_csv("Concatenated_files.csv")
+        self.newdata_combobox(df_index)
 
-        date_format = "%Y-%m-%d %H:%M:%S"
 
-        # Configura os timestamps do iniciais e finais do arquivo
-        start = self.df.index[0]
-        end = self.df.index[-1]
+    def newdata_combobox(self, df_index):
+        self.ui.comboBox.clear()
+        self.ui.comboBox_2.clear()
+        self.ui.comboBox.addItems(df_index)
+        self.ui.comboBox_2.addItems(df_index)
 
-        datetime_start = datetime.strptime(start, date_format)
-        qdatetime_start = QDateTime(datetime_start)
+    def updateComboBoxValue(self, value):
+        self.ui.comboBox.setCurrentIndex(value)
 
-        datetime_end = datetime.strptime(end, date_format)
-        qdatetime_end = QDateTime(datetime_end)
-
-        self.ui.dateTimeEdit.setDateTime(qdatetime_start)
-        self.ui.dateTimeEdit_2.setDateTime(qdatetime_end)
+    def updateComboBoxValue2(self, value):
+        self.ui.comboBox_2.setCurrentIndex(value)
 
     def plot(self):
+
         # plot mapa de calor com os dados selecionados pelo usuário
-        self.start = self.ui.dateTimeEdit.text()
-        self.stop = self.ui.dateTimeEdit_2.text()
+        self.start = self.ui.comboBox.currentText()
+        self.stop = self.ui.comboBox_2.currentText()
 
-        df = pd.DataFrame(self.df.index)
+        df_valid = self.df.applymap(string_to_int_list)
 
-        aux_start = df[df == self.start].dropna().index[0]
-        aux_end = df[df == self.stop].dropna().index[-1]
+        data = df_valid[self.start:self.stop]
+        aux = np.asarray([i for i in data["profile_data"]])
 
-        data_toplot = self.df["profile_data"].iloc[aux_start:aux_end]
-
-        self.image = mining(data_toplot)
-
-        heatmap = self.ui.heatmap.setImage(self.image)
+        heatmap = self.ui.heatmap.setImage(aux)
         self.ui.plot_item.addItem(heatmap)
 
     def to_cloud(self):

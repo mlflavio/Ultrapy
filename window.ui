@@ -139,15 +139,22 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="comboBox"/>
+                <widget class="QComboBox" name="comboBox">
+                 <property name="editable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
                <item>
-                <widget class="QDateTimeEdit" name="dateTimeEdit">
-                 <property name="buttonSymbols">
-                  <enum>QAbstractSpinBox::UpDownArrows</enum>
-                 </property>
-                 <property name="displayFormat">
-                  <string>dd-MM-yyyy HH:mm</string>
+                <widget class="QSlider" name="horizontalSlider">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -163,12 +170,19 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="comboBox_2"/>
+                <widget class="QComboBox" name="comboBox_2">
+                 <property name="editable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="frame">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item>
-                <widget class="QDateTimeEdit" name="dateTimeEdit_2">
-                 <property name="displayFormat">
-                  <string>dd-MM-yyyy HH:mm</string>
+                <widget class="QSlider" name="horizontalSlider_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
